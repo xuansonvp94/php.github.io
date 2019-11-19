@@ -8,6 +8,7 @@ class Apps_Libs_DbConnection {
     protected $password ='123456';
     protected $host ='localhost';
     protected $database ='practice';
+    protected $queryParams = [];
 
     protected $tableName;
     protected static $connectionInstance =null;
@@ -43,5 +44,37 @@ class Apps_Libs_DbConnection {
             $q->execute();
         }
         return $q;
+    }
+
+    public function buildQueryParams($params) {
+        $defaul = [
+            "select" => "",
+            "where" => "",
+            "other" => "",
+            "params" => ""
+        ];
+        $this->queryParams = array_merge($defaul, $params);
+        return this;
+
+    }
+
+    public function select() {
+        $this->queryParams["params"];
+    }
+
+    public function selectOne () {
+
+    }
+
+    public function insert () {
+
+    }
+
+    public function update() {
+
+    }
+
+    public function delete () {
+
     }
 }

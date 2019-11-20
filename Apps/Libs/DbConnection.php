@@ -36,6 +36,10 @@ class Apps_Libs_DbConnection {
         return self::$connectionInstance;
     }
 
+    /**
+     * function query: thuc thi cau truy van execute()
+     *
+     */
     public function query($sql, $params = []) {
         $q = self::$connectionInstance->prepare($sql);
         if (is_array($params) && $params) {
@@ -46,20 +50,38 @@ class Apps_Libs_DbConnection {
         return $q;
     }
 
+    /**
+     * gop cac params truyen vao trong $queryParams, toi uu cach lam
+     * @return $this
+     */
     public function buildQueryParams($params) {
-        $defaul = [
+        $default = [
             "select" => "",
             "where" => "",
             "other" => "",
             "params" => ""
         ];
-        $this->queryParams = array_merge($defaul, $params);
-        return this;
+        $this->queryParams = array_merge($default, $params);
+        return $this;
 
     }
 
+    /*
+     * function buildCondition: xu ly dieu kien where, neu params truyen vao co where thi trong cau sql moi them "where"
+     * trim(): cat khoang trang o dau cuoi
+     */
+    public function buildCondition($condition) {
+        if (trim($condition)) {
+            return "where ".$condition;
+        }
+        return "";
+    }
+
     public function select() {
-        $this->queryParams["params"];
+        $sql = "select ".$this->queryParams["select"]." from ".$this->tableName." ".
+            $this->buildCondition($this->queryParams["where"])." ".$this->queryParams["other"];
+        $query = $this->query($sql,$this->queryParams["params"]);
+        return $query->setFetchMode(PDO::FETCH_ASSOC);
     }
 
     public function selectOne () {
